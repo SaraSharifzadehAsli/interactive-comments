@@ -1,0 +1,159 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Rubik", sans-serif;
+  background-color: hsl(228, 33%, 97%);
+  line-height: 24px;
+  font-size: 16px;
+}
+
+li {
+  list-style-type: none;
+}
+
+input {
+  outline: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  border: none;
+}
+
+.container {
+  margin: 32px 16px;
+}
+
+.card {
+  border-radius: 8px;
+  background-color: hsl(0, 0%, 100%);
+  margin-top: 16px;
+  padding: 16px;
+}
+
+.card__nav {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+.card__nav__image {
+  width: 32px;
+}
+.card__nav__name {
+  color: hsl(212, 24%, 26%);
+  font-weight: 500;
+}
+.card__nav__date {
+  color: hsl(211, 10%, 45%);
+}
+
+.card__comment {
+  color: hsl(211, 10%, 45%);
+  padding: 16px 0;
+}
+
+.card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card__review {
+  display: flex;
+  border-radius: 10px;
+  background-color: hsl(228, 33%, 97%);
+  align-items: center;
+  width: 100px;
+  height: 40px;
+  justify-content: space-around;
+}
+.card__review__number {
+  color: hsl(238, 40%, 52%);
+  font-weight: 500;
+}
+.card__review__plus, .card__review__minus {
+  color: hsl(239, 57%, 85%);
+}
+
+.card__reply,
+.card__buttons,
+.card__edit,
+.card__delete {
+  display: inline-flex;
+  color: hsl(238, 40%, 52%);
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.card__edit {
+  padding-left: 16px;
+}
+
+.card__delete {
+  color: hsl(358, 79%, 66%);
+}
+
+.reply__border--left {
+  width: 2px;
+  height: auto;
+  background-color: hsl(223, 19%, 93%);
+  margin-right: 16px;
+  margin-top: 16px;
+}
+
+.reply__container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-comment {
+  border-radius: 8px;
+  background-color: hsl(0, 0%, 100%);
+  padding: 16px;
+  margin-top: 16px;
+}
+.add-comment__image-send {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.add-comment__input {
+  border: 1px solid hsl(223, 19%, 93%);
+  border-radius: 8px;
+  height: 100px;
+  width: 100%;
+  margin-bottom: 16px;
+  padding-left: 24px;
+}
+.add-comment__image {
+  width: 32px;
+}
+.add-comment__send {
+  color: hsl(0, 0%, 100%);
+  padding: 12px 30px;
+  border-radius: 8px;
+  background-color: hsl(238, 40%, 52%);
+  font-weight: 500;
+}
+
+.card__nav--you {
+  display: inline-block;
+  border-radius: 2px;
+  background-color: hsl(238, 40%, 52%);
+  color: hsl(0, 0%, 100%);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0 8px;
+}
+
+/*# sourceMappingURL=style.css.map */

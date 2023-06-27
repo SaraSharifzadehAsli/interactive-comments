@@ -1,0 +1,176 @@
+@import "variables";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Rubik", sans-serif;
+  background-color: $veryLightGray;
+  //   font-weight: 500;
+  line-height: 24px;
+  font-size: 16px;
+}
+
+li {
+  list-style-type: none;
+}
+
+input {
+  outline: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  //   background-color: inherit;
+}
+
+button {
+  font: inherit;
+  border: none;
+}
+
+.container {
+  margin: 32px 16px;
+}
+
+.card {
+  border-radius: 8px;
+  background-color: $white;
+  margin-top: 16px;
+  padding: 16px;
+}
+
+.card__nav {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+
+  &__image {
+    width: 32px;
+  }
+
+  &__name {
+    color: $darkBlue;
+    font-weight: 500;
+  }
+
+  &__date {
+    color: $grayishBlue;
+  }
+}
+
+.card__comment {
+  color: $grayishBlue;
+  padding: 16px 0;
+}
+
+.card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card__review {
+  display: flex;
+  border-radius: 10px;
+  background-color: $veryLightGray;
+  align-items: center;
+  width: 100px;
+  height: 40px;
+  justify-content: space-around;
+
+  &__number {
+    color: $moderateBlue;
+    font-weight: 500;
+  }
+
+  &__plus,
+  &__minus {
+    color: $lightGrayishBlue;
+  }
+}
+
+.card__reply,
+.card__buttons,
+.card__edit,
+.card__delete {
+  display: inline-flex;
+  color: $moderateBlue;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.card__edit {
+  padding-left: 16px;
+}
+
+.card__delete {
+  color: $softRed;
+}
+
+.reply__border--left {
+  width: 2px;
+  height: auto;
+  background-color: $lightGray;
+  margin-right: 16px;
+  margin-top: 16px;
+}
+
+.reply__container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-comment {
+  border-radius: 8px;
+  background-color: $white;
+  padding: 16px;
+  margin-top: 16px;
+
+  &__image-send {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__input {
+    border: 1px solid $lightGray;
+    border-radius: 8px;
+    height: 100px;
+    width: 100%;
+    margin-bottom: 16px;
+    padding-left: 24px;
+  }
+
+  &__image {
+    width: 32px;
+  }
+
+  &__send {
+    color: $white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    background-color: $moderateBlue;
+    font-weight: 500;
+  }
+}
+
+.card__nav--you {
+  display: inline-block;
+  border-radius: 2px;
+  background-color: $moderateBlue;
+  color: $white;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0 8px;
+}
+
+// textarea {
+//   vertical-align: top;
+//   height: 200px;
+// }
