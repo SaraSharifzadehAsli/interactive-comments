@@ -1,4 +1,5 @@
-@import "variables";
+@use 'mixins' as *;
+@import 'variables';
 
 * {
   margin: 0;
@@ -7,7 +8,7 @@
 }
 
 body {
-  font-family: "Rubik", sans-serif;
+  font-family: 'Rubik', sans-serif;
   background-color: $veryLightGray;
   //   font-weight: 500;
   line-height: 24px;
@@ -18,12 +19,11 @@ li {
   list-style-type: none;
 }
 
-input {
+textarea {
   outline: none;
   border: none;
   font: inherit;
   color: inherit;
-  //   background-color: inherit;
 }
 
 button {
@@ -36,17 +36,14 @@ button {
 }
 
 .card {
-  border-radius: 8px;
+  border-radius: $borderRadius;
   background-color: $white;
   margin-top: 16px;
   padding: 16px;
 }
 
 .card__nav {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
+  @include display(inline-flex, center, center, 16px);
 
   &__image {
     width: 32px;
@@ -54,7 +51,7 @@ button {
 
   &__name {
     color: $darkBlue;
-    font-weight: 500;
+    font-weight: $fontWeightMedium;
   }
 
   &__date {
@@ -65,48 +62,56 @@ button {
 .card__comment {
   color: $grayishBlue;
   padding: 16px 0;
+
+  span {
+    color: $moderateBlue;
+    font-weight: $fontWeightMedium;
+  }
 }
 
 .card__footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @include display(flex, space-between, center);
 }
 
 .card__review {
-  display: flex;
+  @include display(flex, space-around, center);
   border-radius: 10px;
   background-color: $veryLightGray;
-  align-items: center;
   width: 100px;
   height: 40px;
-  justify-content: space-around;
 
   &__number {
     color: $moderateBlue;
-    font-weight: 500;
+    font-weight: $fontWeightMedium;
   }
 
   &__plus,
   &__minus {
     color: $lightGrayishBlue;
+    cursor: pointer;
   }
 }
 
 .card__reply,
-.card__buttons,
 .card__edit,
 .card__delete {
-  display: inline-flex;
+  @include display(inline-flex, center, center, 8px);
   color: $moderateBlue;
-  align-items: center;
-  gap: 8px;
-  justify-content: center;
-  font-weight: 500;
+  font-weight: $fontWeightMedium;
+  transition: $transition;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+.card__buttons {
+  @include display(inline-flex, center, center, 8px);
 }
 
 .card__edit {
-  padding-left: 16px;
+  margin-left: 16px;
 }
 
 .card__delete {
@@ -114,37 +119,37 @@ button {
 }
 
 .reply__border--left {
-  width: 2px;
+  width: 5px;
   height: auto;
   background-color: $lightGray;
   margin-right: 16px;
+}
+
+.firstReply {
   margin-top: 16px;
 }
 
 .reply__container {
-  display: flex;
-  justify-content: space-between;
+  @include display(flex, space-between);
 }
 
 .add-comment {
-  border-radius: 8px;
+  border-radius: $borderRadius;
   background-color: $white;
   padding: 16px;
   margin-top: 16px;
 
   &__image-send {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include display(flex, space-between, center);
   }
 
   &__input {
     border: 1px solid $lightGray;
-    border-radius: 8px;
+    border-radius: $borderRadius;
     height: 100px;
     width: 100%;
     margin-bottom: 16px;
-    padding-left: 24px;
+    padding: 12px 24px;
   }
 
   &__image {
@@ -152,11 +157,19 @@ button {
   }
 
   &__send {
-    color: $white;
-    padding: 12px 30px;
-    border-radius: 8px;
-    background-color: $moderateBlue;
-    font-weight: 500;
+    @include button(
+      104px,
+      48px,
+      $moderateBlue,
+      $white,
+      $borderRadius,
+      $fontWeightMedium,
+      $transition
+    );
+
+    &:hover {
+      opacity: 0.5;
+    }
   }
 }
 
@@ -166,11 +179,152 @@ button {
   background-color: $moderateBlue;
   color: $white;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: $fontWeightMedium;
   padding: 0 8px;
 }
 
-// textarea {
-//   vertical-align: top;
-//   height: 200px;
-// }
+.confirmation-modal--background {
+  opacity: 0.5;
+  background-color: black;
+  // width: 100vw;
+  // height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  // display: flex;
+}
+
+.confirmation-modal {
+  border-radius: $borderRadius;
+  background-color: $white;
+  opacity: 1;
+  width: 343px;
+  // margin: auto;
+  // @include display(flex, center, center);
+  position: fixed;
+  // top: 0;
+  // left: 0;
+  // bottom: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 24px;
+
+  &__header {
+    color: $darkBlue;
+    font-weight: 500;
+    margin-bottom: 16px;
+    font-size: 24px;
+  }
+
+  &__text {
+    color: $grayishBlue;
+    margin-bottom: 16px;
+  }
+
+  &__footer {
+    @include display(flex, space-between, $gap: 12px);
+  }
+
+  &__no,
+  &__yes {
+    @include button(
+      $width: 138px,
+      $height: 48px,
+      $backgroundColor: $softRed,
+      $color: $white,
+      $borderRadius: $borderRadius,
+      $fontWeight: 500,
+      $transition: $transition
+    );
+  }
+
+  &__yes {
+    background-color: $grayishBlue;
+  }
+}
+
+@media (min-width: 1220px) {
+  .container {
+    width: 50%;
+    margin: 64px auto;
+  }
+
+  .card {
+    position: relative;
+    padding: 24px 24px 24px 88px;
+    margin-top: 20px;
+  }
+
+  .card__review {
+    height: 100px;
+    width: 40px;
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    @include display(flex, space-around, center, $flexDirection: column);
+  }
+
+  .card__buttons {
+    position: absolute;
+    top: 28px;
+    right: 24px;
+  }
+
+  .reply__border--left {
+    margin: 0 5% 0 5%;
+  }
+
+  .firstReply {
+    margin-top: 20px;
+  }
+
+  .add-comment {
+    position: relative;
+    padding: 24px 144px 24px 80px;
+    margin-top: 24px;
+    height: 148px;
+
+    &__input {
+      margin: 0;
+    }
+
+    &__image-send {
+      display: inline-block;
+    }
+
+    &__image {
+      position: absolute;
+      top: 28px;
+      left: 24px;
+      width: 40px;
+    }
+
+    &__send {
+      position: absolute;
+      top: 28px;
+      right: 24px;
+    }
+  }
+
+  .confirmation-modal {
+    width: 400px;
+    padding: 32px;
+
+    &__header,
+    &__text {
+      margin-bottom: 20px;
+    }
+
+    &__header {
+      font-size: 24px;
+    }
+
+    &__yes,
+    &__no {
+      width: 161px;
+    }
+  }
+}

@@ -1,0 +1,40 @@
+// @import "variables";
+
+@mixin display(
+  $display,
+  $justifyContent,
+  $alignItems: null,
+  $gap: null,
+  $flexDirection: row
+) {
+  display: $display;
+  justify-content: $justifyContent;
+  align-items: $alignItems;
+  gap: $gap;
+  flex-direction: $flexDirection;
+}
+
+@mixin button(
+  $width,
+  $height,
+  $backgroundColor,
+  $color,
+  $borderRadius,
+  $fontWeight,
+  $transition,
+  $border: null
+) {
+  width: $width;
+  height: $height;
+  background-color: $backgroundColor;
+  color: $color;
+  border-radius: $borderRadius;
+  font-weight: $fontWeight;
+  transition: $transition;
+  border: $border;
+  cursor: pointer;
+}
+
+// @mixin media($deviceWidth) {
+//   @if ($deviceWidth == )
+// }

@@ -15,7 +15,7 @@ li {
   list-style-type: none;
 }
 
-input {
+textarea {
   outline: none;
   border: none;
   font: inherit;
@@ -43,6 +43,7 @@ button {
   justify-content: center;
   align-items: center;
   gap: 16px;
+  flex-direction: row;
 }
 .card__nav__image {
   width: 32px;
@@ -59,21 +60,27 @@ button {
   color: hsl(211, 10%, 45%);
   padding: 16px 0;
 }
+.card__comment span {
+  color: hsl(238, 40%, 52%);
+  font-weight: 500;
+}
 
 .card__footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-direction: row;
 }
 
 .card__review {
   display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: row;
   border-radius: 10px;
   background-color: hsl(228, 33%, 97%);
-  align-items: center;
   width: 100px;
   height: 40px;
-  justify-content: space-around;
 }
 .card__review__number {
   color: hsl(238, 40%, 52%);
@@ -81,22 +88,38 @@ button {
 }
 .card__review__plus, .card__review__minus {
   color: hsl(239, 57%, 85%);
+  cursor: pointer;
 }
 
 .card__reply,
-.card__buttons,
 .card__edit,
 .card__delete {
   display: inline-flex;
-  color: hsl(238, 40%, 52%);
+  justify-content: center;
   align-items: center;
   gap: 8px;
-  justify-content: center;
+  flex-direction: row;
+  color: hsl(238, 40%, 52%);
   font-weight: 500;
+  transition: all 0.2s ease-in;
+  cursor: pointer;
+}
+.card__reply:hover,
+.card__edit:hover,
+.card__delete:hover {
+  opacity: 0.5;
+}
+
+.card__buttons {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row;
 }
 
 .card__edit {
-  padding-left: 16px;
+  margin-left: 16px;
 }
 
 .card__delete {
@@ -104,16 +127,20 @@ button {
 }
 
 .reply__border--left {
-  width: 2px;
+  width: 5px;
   height: auto;
   background-color: hsl(223, 19%, 93%);
   margin-right: 16px;
+}
+
+.firstReply {
   margin-top: 16px;
 }
 
 .reply__container {
   display: flex;
   justify-content: space-between;
+  flex-direction: row;
 }
 
 .add-comment {
@@ -126,6 +153,7 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-direction: row;
 }
 .add-comment__input {
   border: 1px solid hsl(223, 19%, 93%);
@@ -133,17 +161,23 @@ button {
   height: 100px;
   width: 100%;
   margin-bottom: 16px;
-  padding-left: 24px;
+  padding: 12px 24px;
 }
 .add-comment__image {
   width: 32px;
 }
 .add-comment__send {
-  color: hsl(0, 0%, 100%);
-  padding: 12px 30px;
-  border-radius: 8px;
+  width: 104px;
+  height: 48px;
   background-color: hsl(238, 40%, 52%);
+  color: hsl(0, 0%, 100%);
+  border-radius: 8px;
   font-weight: 500;
+  transition: all 0.2s ease-in;
+  cursor: pointer;
+}
+.add-comment__send:hover {
+  opacity: 0.5;
 }
 
 .card__nav--you {
@@ -154,6 +188,127 @@ button {
   font-size: 13px;
   font-weight: 500;
   padding: 0 8px;
+}
+
+.confirmation-modal--background {
+  opacity: 0.5;
+  background-color: black;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.confirmation-modal {
+  border-radius: 8px;
+  background-color: hsl(0, 0%, 100%);
+  opacity: 1;
+  width: 343px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 24px;
+}
+.confirmation-modal__header {
+  color: hsl(212, 24%, 26%);
+  font-weight: 500;
+  margin-bottom: 16px;
+  font-size: 24px;
+}
+.confirmation-modal__text {
+  color: hsl(211, 10%, 45%);
+  margin-bottom: 16px;
+}
+.confirmation-modal__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-direction: row;
+}
+.confirmation-modal__no, .confirmation-modal__yes {
+  width: 138px;
+  height: 48px;
+  background-color: hsl(358, 79%, 66%);
+  color: hsl(0, 0%, 100%);
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease-in;
+  cursor: pointer;
+}
+.confirmation-modal__yes {
+  background-color: hsl(211, 10%, 45%);
+}
+
+@media (min-width: 1220px) {
+  .container {
+    width: 50%;
+    margin: 64px auto;
+  }
+  .card {
+    position: relative;
+    padding: 24px 24px 24px 88px;
+    margin-top: 20px;
+  }
+  .card__review {
+    height: 100px;
+    width: 40px;
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+  }
+  .card__buttons {
+    position: absolute;
+    top: 28px;
+    right: 24px;
+  }
+  .reply__border--left {
+    margin: 0 5% 0 5%;
+  }
+  .firstReply {
+    margin-top: 20px;
+  }
+  .add-comment {
+    position: relative;
+    padding: 24px 144px 24px 80px;
+    margin-top: 24px;
+    height: 148px;
+  }
+  .add-comment__input {
+    margin: 0;
+  }
+  .add-comment__image-send {
+    display: inline-block;
+  }
+  .add-comment__image {
+    position: absolute;
+    top: 28px;
+    left: 24px;
+    width: 40px;
+  }
+  .add-comment__send {
+    position: absolute;
+    top: 28px;
+    right: 24px;
+  }
+  .confirmation-modal {
+    width: 400px;
+    padding: 32px;
+  }
+  .confirmation-modal__header, .confirmation-modal__text {
+    margin-bottom: 20px;
+  }
+  .confirmation-modal__header {
+    font-size: 24px;
+  }
+  .confirmation-modal__yes, .confirmation-modal__no {
+    width: 161px;
+  }
 }
 
 /*# sourceMappingURL=style.css.map */
