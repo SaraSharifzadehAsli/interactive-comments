@@ -38,11 +38,10 @@ export function CardButtons(isCurrentUser) {
 </div>`
 }
 
-export function CardReview(score, commentIterator) {
+export function CardReview(score) {
   return `
 <div class="card__review">
   <svg
-    onclick="likeCommentHandler(${commentIterator})"
     class="card__review__plus"
     width="11"
     height="11"
@@ -55,8 +54,7 @@ export function CardReview(score, commentIterator) {
   </svg>
   <div class="card__review__number">${score}</div>
   <svg
-    onclick="dislikeCommentHandler(${commentIterator})"
-    class="card__review__minus"
+    class="card__review__minus ${score ? '' : 'card__review__minus--disabled'}"
     width="11"
     height="3"
     xmlns="http://www.w3.org/2000/svg"
@@ -92,10 +90,10 @@ export function CardNavigation(image, name, date, isCurrentUser) {
   `
 }
 
-export function CardFooter(score, commentIterator, isCurrentUser) {
+export function CardFooter(score, isCurrentUser) {
   return `
   <div class="card__footer">
-  ${CardReview(score, commentIterator)}
+  ${CardReview(score)}
   ${CardButtons(isCurrentUser)}
   </div>
   `

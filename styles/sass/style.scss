@@ -90,6 +90,11 @@ button {
     color: $lightGrayishBlue;
     cursor: pointer;
   }
+
+  &__minus--disabled {
+    cursor: unset;
+    opacity: 0.3;
+  }
 }
 
 .card__reply,

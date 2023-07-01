@@ -90,6 +90,10 @@ button {
   color: hsl(239, 57%, 85%);
   cursor: pointer;
 }
+.card__review__minus--disabled {
+  cursor: unset;
+  opacity: 0.3;
+}
 
 .card__reply,
 .card__edit,

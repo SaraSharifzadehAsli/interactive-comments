@@ -8,10 +8,12 @@ import {
   ConfirmationModal,
 } from './components.mjs'
 
+document.addEventListener('DOMContentLoaded', getCommentsLocal)
+
 async function runApp() {
   const response = await fetch('./data.json')
   const data = await response.json()
-  renderApp(data)
+  saveLocalComments(data)
 }
 
 function renderApp(data) {
@@ -22,6 +24,7 @@ function renderApp(data) {
     let isCurrentUser = comments[i].user.username === currentUser.username
     const li = document.createElement('li')
     li.classList.add('card')
+    li.setAttribute('id', comments[i].id)
     const markup = `
     <div class="card__content">
       ${CardNavigation(
@@ -32,7 +35,7 @@ function renderApp(data) {
       )}
       <p class="card__comment">${comments[i].content}</p>
     </div>
-    ${CardFooter(comments[i].score, i, isCurrentUser)}
+    ${CardFooter(comments[i].score, isCurrentUser)}
     `
     li.innerHTML = markup
     container.appendChild(li)
@@ -44,7 +47,7 @@ function renderApp(data) {
       li.classList.add('reply__container')
       const markup = `
       <div class="reply__border--left ${firstReply}"></div> 
-      <div class="card">
+      <div class="card" id=${comments[i].replies[j].id}>
         <div class="card__content">
         ${CardNavigation(
           comments[i].replies[j].user.image.webp,
@@ -56,11 +59,7 @@ function renderApp(data) {
             comments[i].replies[j].replyingTo
           }</span> ${comments[i].replies[j].content}</p>
         </div>
-        ${CardFooter(
-          comments[i].replies[j].score,
-          comments[i].replies.length + j,
-          isCurrentUser
-        )}
+        ${CardFooter(comments[i].replies[j].score, isCurrentUser)}
       </div>
       `
       li.innerHTML = markup
@@ -71,54 +70,95 @@ function renderApp(data) {
   const markup = AddComment(currentUser.image.png)
   li.innerHTML = markup
   container.appendChild(li)
-  const deleteCard = document.querySelector('.card__delete')
-  deleteCard.addEventListener('click', (e) => {
-    const markup = ConfirmationModal()
-    const confirmationModal = document.createElement('div')
-    confirmationModal.innerHTML = markup
-    container.appendChild(confirmationModal)
-    const card = deleteCard.closest('.card')
-    const yesDelete = document.querySelector('.confirmation-modal__yes')
-    const noCancel = document.querySelector('.confirmation-modal__no')
-    console.log(yesDelete)
-    console.log(noCancel)
-    yesDelete.addEventListener('click', (e) => {
-      confirmationModal.style.display = 'none'
-      card.style.display = 'none'
+  const deleteCard = document.querySelectorAll('.card__delete')
+  for (let i = 0; i < deleteCard.length; i++) {
+    deleteCard[i].addEventListener('click', (e) => {
+      const markup = ConfirmationModal()
+      const confirmationModal = document.createElement('div')
+      confirmationModal.innerHTML = markup
+      container.appendChild(confirmationModal)
+      const card = deleteCard[i].closest('.card')
+      function deleteObjectById(array, id) {
+        for (let i = 0; i < array.length; i++) {
+          const obj = array[i]
+          if (obj.id === id) {
+            array.splice(i, 1)
+          }
+          if (obj.replies && obj.replies.length > 0) {
+            const nestedResult = deleteObjectById(obj.replies, id)
+            if (nestedResult) {
+            }
+          }
+        }
+      }
+      const yesDelete = document.querySelector('.confirmation-modal__yes')
+      const noCancel = document.querySelector('.confirmation-modal__no')
+      yesDelete.addEventListener('click', (e) => {
+        confirmationModal.innerHTML = ''
+        deleteObjectById(comments, Number(card.id))
+        saveLocalComments(data)
+      })
+      noCancel.addEventListener('click', (e) => {
+        confirmationModal.innerHTML = ''
+      })
     })
-    noCancel.addEventListener('click', (e) => {
-      confirmationModal.style.display = 'none'
+  }
+  const likeComment = document.querySelectorAll('.card__review__plus')
+  for (let i = 0; i < likeComment.length; i++) {
+    likeComment[i].addEventListener('click', (e) => {
+      const id = Number(likeComment[i].closest('.card').id)
+      const newScoreValue =
+        Number(
+          document.querySelectorAll('.card__review__number')[i].innerHTML
+        ) + 1
+      const reviewMinus = document.querySelectorAll('.card__review__minus')[i]
+      changeObjectById(comments, id, 'score', newScoreValue)
+      saveLocalComments(data)
+      reviewMinus.style.opacity = 1
     })
-  })
+  }
+  const dislikeComment = document.querySelectorAll('.card__review__minus')
+  for (let i = 0; i < dislikeComment.length; i++) {
+    dislikeComment[i].addEventListener('click', (e) => {
+      const score = Number(
+        document.querySelectorAll('.card__review__number')[i].innerHTML
+      )
+      const id = Number(likeComment[i].closest('.card').id)
+      const newScoreValue = score - 1
+      if (score > 0) {
+        changeObjectById(comments, id, 'score', newScoreValue)
+        saveLocalComments(data)
+      }
+    })
+  }
 }
 
-runApp()
-
-window.likeCommentHandler = (i) => {
-  const reviewNumber = document.querySelectorAll('.card__review__number')[i]
-  reviewNumber.innerHTML++
+function changeObjectById(array, id, changedProperty, newValueProperty) {
+  for (let i = 0; i < array.length; i++) {
+    const obj = array[i]
+    if (obj.id === id) {
+      obj[changedProperty] = newValueProperty
+    }
+    if (obj.replies && obj.replies.length > 0) {
+      changeObjectById(obj.replies, id, changedProperty, newValueProperty)
+    }
+  }
 }
-
-window.dislikeCommentHandler = (i) => {
-  const reviewNumber = document.querySelectorAll('.card__review__number')[i]
-  Number(reviewNumber.innerHTML) ? reviewNumber.innerHTML-- : null
-  // change style of - (curser & opacity) ?
-}
-
-// window.deleteHandler = (deleteCard) => {
-//   deleteCard.closest('.card').style.display = 'none'
-// event ??? style???
-// }
-
-// function deleteHandler(e) {
-//   console.log(e.target)
-// }
 
 function saveLocalComments(newChange) {
-  const comments = []
+  localStorage.clear()
+  const data = newChange
+  localStorage.setItem('comments', JSON.stringify(data))
+  document.querySelector('.container').innerHTML = ''
+  renderApp(data)
+}
+
+function getCommentsLocal() {
+  let data
   if (localStorage.getItem('comments') !== null) {
-    comments = JSON.parse(localStorage.getItem('comments'))
+    data = JSON.parse(localStorage.getItem('comments'))
+    renderApp(data)
+  } else {
+    runApp()
   }
-  comments.push(newChange)
-  localStorage.setItem('comments', JSON.stringify(comments))
 }
