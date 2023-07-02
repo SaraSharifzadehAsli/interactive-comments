@@ -36,10 +36,30 @@ button {
 }
 
 .card {
+  position: relative;
   border-radius: $borderRadius;
   background-color: $white;
   margin-top: 16px;
   padding: 16px;
+  width: 100%;
+
+  &__update {
+    margin: 16px 0 0 auto;
+    display: block;
+    @include button(
+      104px,
+      48px,
+      $moderateBlue,
+      $white,
+      $borderRadius,
+      $fontWeightMedium,
+      $transition
+    );
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
 }
 
 .card__nav {
@@ -62,6 +82,7 @@ button {
 .card__comment {
   color: $grayishBlue;
   padding: 16px 0;
+  word-break: break-all;
 
   span {
     color: $moderateBlue;
@@ -89,6 +110,10 @@ button {
   &__minus {
     color: $lightGrayishBlue;
     cursor: pointer;
+    transition: $transition;
+    &:hover {
+      color: $moderateBlue;
+    }
   }
 
   &__minus--disabled {
@@ -124,7 +149,7 @@ button {
 }
 
 .reply__border--left {
-  width: 5px;
+  width: 3px;
   height: auto;
   background-color: $lightGray;
   margin-right: 16px;
@@ -155,6 +180,10 @@ button {
     width: 100%;
     margin-bottom: 16px;
     padding: 12px 24px;
+    color: $darkBlue;
+    &:focus {
+      border: 1px solid $moderateBlue;
+    }
   }
 
   &__image {
@@ -191,14 +220,11 @@ button {
 .confirmation-modal--background {
   opacity: 0.5;
   background-color: black;
-  // width: 100vw;
-  // height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  // display: flex;
 }
 
 .confirmation-modal {
@@ -206,12 +232,7 @@ button {
   background-color: $white;
   opacity: 1;
   width: 343px;
-  // margin: auto;
-  // @include display(flex, center, center);
   position: fixed;
-  // top: 0;
-  // left: 0;
-  // bottom: 0;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

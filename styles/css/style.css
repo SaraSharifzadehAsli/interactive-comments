@@ -32,10 +32,27 @@ button {
 }
 
 .card {
+  position: relative;
   border-radius: 8px;
   background-color: hsl(0, 0%, 100%);
   margin-top: 16px;
   padding: 16px;
+  width: 100%;
+}
+.card__update {
+  margin: 16px 0 0 auto;
+  display: block;
+  width: 104px;
+  height: 48px;
+  background-color: hsl(238, 40%, 52%);
+  color: hsl(0, 0%, 100%);
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease-in;
+  cursor: pointer;
+}
+.card__update:hover {
+  opacity: 0.5;
 }
 
 .card__nav {
@@ -59,6 +76,7 @@ button {
 .card__comment {
   color: hsl(211, 10%, 45%);
   padding: 16px 0;
+  word-break: break-all;
 }
 .card__comment span {
   color: hsl(238, 40%, 52%);
@@ -89,6 +107,10 @@ button {
 .card__review__plus, .card__review__minus {
   color: hsl(239, 57%, 85%);
   cursor: pointer;
+  transition: all 0.2s ease-in;
+}
+.card__review__plus:hover, .card__review__minus:hover {
+  color: hsl(238, 40%, 52%);
 }
 .card__review__minus--disabled {
   cursor: unset;
@@ -131,7 +153,7 @@ button {
 }
 
 .reply__border--left {
-  width: 5px;
+  width: 3px;
   height: auto;
   background-color: hsl(223, 19%, 93%);
   margin-right: 16px;
@@ -166,6 +188,10 @@ button {
   width: 100%;
   margin-bottom: 16px;
   padding: 12px 24px;
+  color: hsl(212, 24%, 26%);
+}
+.add-comment__input:focus {
+  border: 1px solid hsl(238, 40%, 52%);
 }
 .add-comment__image {
   width: 32px;

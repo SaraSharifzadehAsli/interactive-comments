@@ -1,6 +1,3 @@
-// import data from "./data.json" assert { type: "json" };
-// console.log(data);
-
 import {
   AddComment,
   CardNavigation,
@@ -13,6 +10,20 @@ document.addEventListener('DOMContentLoaded', getCommentsLocal)
 async function runApp() {
   const response = await fetch('./data.json')
   const data = await response.json()
+
+  // Update the createdAt property of each comment
+  data.comments.forEach((comment) => {
+    const createdAt = comment.createdAt
+    const convertedDate = convertRelativeTime(createdAt)
+    comment.convertedDate = convertedDate
+  })
+  for (let i = 0; i < data.comments.length; i++) {
+    data.comments[i].replies.forEach((reply) => {
+      const createdAt = reply.createdAt
+      const convertedDate = convertRelativeTime(createdAt)
+      reply.convertedDate = convertedDate
+    })
+  }
   saveLocalComments(data)
 }
 
@@ -131,10 +142,57 @@ function renderApp(data) {
       }
     })
   }
+  const send = document.querySelector('.add-comment__send')
+  send.addEventListener('click', (e) => {
+    const newId = findMaxId(comments) + 1
+    const inputCurrentUserValue = document.querySelector(
+      '.add-comment__input'
+    ).value
+    const newObj = {
+      id: newId,
+      content: inputCurrentUserValue,
+      convertedDate: new Date(),
+      createdAt: '1 second ago',
+      score: 0,
+      user: currentUser,
+      replies: [],
+    }
+    comments.push(newObj)
+    saveLocalComments(data)
+  })
+  const edit = document.querySelectorAll('.card__edit')
+  for (let i = 0; i < edit.length; i++) {
+    edit[i].addEventListener('click', (e) => {
+      const card = edit[i].closest('.card')
+      const id = Number(card.id)
+      const content = card.querySelector('.card__comment')
+      const contentParent = card.querySelector('.card__content')
+      if (!card.querySelector('.add-comment__input')) {
+        const value = content.innerText
+        const textarea = document.createElement('textarea')
+        textarea.value = value
+        textarea.classList.add('add-comment__input')
+        textarea.style.marginTop = '16px'
+        contentParent.appendChild(textarea)
+        content.style.display = 'none'
+        autoResizeTextarea(textarea)
+        textarea.focus()
+        const updateButton = document.createElement('button')
+        updateButton.classList.add('card__update')
+        updateButton.innerText = 'UPDATE'
+        card.appendChild(updateButton)
+        updateButton.addEventListener('click', (e) => {
+          changeObjectById(comments, id, 'content', textarea.value)
+          saveLocalComments(data)
+        })
+      }
+    })
+  }
 }
 
 function changeObjectById(array, id, changedProperty, newValueProperty) {
   for (let i = 0; i < array.length; i++) {
+    debugger
     const obj = array[i]
     if (obj.id === id) {
       obj[changedProperty] = newValueProperty
@@ -148,6 +206,22 @@ function changeObjectById(array, id, changedProperty, newValueProperty) {
 function saveLocalComments(newChange) {
   localStorage.clear()
   const data = newChange
+
+  // Update the createdAt property of each comment
+  data.comments.forEach((comment) => {
+    const convertedDate = comment.convertedDate
+    const timeInterval = getTimeInterval(convertedDate)
+    comment.createdAt = timeInterval
+  })
+
+  for (let i = 0; i < data.comments.length; i++) {
+    data.comments[i].replies.forEach((reply) => {
+      const convertedDate = reply.convertedDate
+      const timeInterval = getTimeInterval(convertedDate)
+      reply.createdAt = timeInterval
+    })
+  }
+
   localStorage.setItem('comments', JSON.stringify(data))
   document.querySelector('.container').innerHTML = ''
   renderApp(data)
@@ -157,8 +231,128 @@ function getCommentsLocal() {
   let data
   if (localStorage.getItem('comments') !== null) {
     data = JSON.parse(localStorage.getItem('comments'))
+
+    // Update the createdAt property of each comment
+    data.comments.forEach((comment) => {
+      const convertedDate = comment.convertedDate
+      const timeInterval = getTimeInterval(convertedDate)
+      comment.createdAt = timeInterval
+    })
+
+    for (let i = 0; i < data.comments.length; i++) {
+      data.comments[i].replies.forEach((reply) => {
+        const convertedDate = reply.convertedDate
+        const timeInterval = getTimeInterval(convertedDate)
+        reply.createdAt = timeInterval
+      })
+    }
     renderApp(data)
   } else {
     runApp()
   }
+}
+
+// Function to recursively find the maximum ID
+function findMaxId(comments) {
+  let maxId = -Infinity
+
+  for (let i = 0; i < comments.length; i++) {
+    const obj = comments[i]
+    const currentId = obj.id
+
+    // If the current ID is greater than the max ID, update maxId
+    if (currentId > maxId) {
+      maxId = currentId
+    }
+
+    // Check if the object has children and recursively call the function
+    if (obj.replies && obj.replies.length > 0) {
+      const childMaxId = findMaxId(obj.replies)
+      if (childMaxId > maxId) {
+        maxId = childMaxId
+      }
+    }
+  }
+
+  return maxId
+}
+
+// Function to convert relative time to actual date
+function convertRelativeTime(relativeTime) {
+  const current = new Date()
+
+  // Extract the numeric value and unit from the relative time string
+  const [value, unit] = relativeTime.split(' ')
+
+  // Calculate the actual date based on the unit
+  let date
+  if (unit.includes('second')) {
+    date = new Date(current.getTime() - value * 1000)
+  } else if (unit.includes('minute')) {
+    date = new Date(current.getTime() - value * 60 * 1000)
+  } else if (unit.includes('hour')) {
+    date = new Date(current.getTime() - value * 60 * 60 * 1000)
+  } else if (unit.includes('day')) {
+    date = new Date(current.getTime() - value * 24 * 60 * 60 * 1000)
+  } else if (unit.includes('week')) {
+    date = new Date(current.getTime() - value * 24 * 60 * 60 * 1000 * 7)
+  } else if (unit.includes('month')) {
+    date = new Date(
+      current.getFullYear(),
+      current.getMonth() - value,
+      current.getDate(),
+      current.getHours(),
+      current.getMinutes(),
+      current.getSeconds()
+    )
+  } else if (unit.includes('year')) {
+    date = new Date(
+      current.getFullYear() - value,
+      current.getMonth(),
+      current.getDate(),
+      current.getHours(),
+      current.getMinutes(),
+      current.getSeconds()
+    )
+  }
+
+  return date
+}
+
+// Function to calculate the time interval
+function getTimeInterval(createdAt) {
+  const now = new Date()
+  const created = new Date(createdAt)
+  const diff = now.getTime() - created.getTime()
+  const seconds = Math.floor(diff / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+  const weeks = Math.floor(days / 7)
+  const months = Math.floor(days / 30)
+  const years = Math.floor(months / 12)
+
+  if (years > 0) {
+    return `${years} year${years > 1 ? 's' : ''} ago`
+  } else if (months > 0) {
+    return `${months} month${months > 1 ? 's' : ''} ago`
+  } else if (weeks > 0) {
+    return `${weeks} week${weeks > 1 ? 's' : ''} ago`
+  } else if (days > 0) {
+    return `${days} day${days > 1 ? 's' : ''} ago`
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`
+  } else if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
+  } else {
+    return `${seconds} second${seconds !== 1 ? 's' : ''} ago`
+  }
+}
+
+function autoResizeTextarea(element) {
+  element.style.height = 'auto' // Reset the height to auto to calculate the actual height
+
+  // Set the height of the textarea to its scroll height
+  element.style.height = `${element.scrollHeight}px`
+  // element.style.overflow = 'hidden'
 }
