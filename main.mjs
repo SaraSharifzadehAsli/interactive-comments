@@ -78,7 +78,7 @@ function renderApp(data) {
     }
   }
   const li = document.createElement('li')
-  const markup = AddComment(currentUser.image.png)
+  const markup = AddComment(currentUser.image.png, 'SEND')
   li.innerHTML = markup
   container.appendChild(li)
   const deleteCard = document.querySelectorAll('.card__delete')
@@ -168,9 +168,16 @@ function renderApp(data) {
       const content = card.querySelector('.card__comment')
       const contentParent = card.querySelector('.card__content')
       if (!card.querySelector('.add-comment__input')) {
-        const value = content.innerText
+        let textContent = ''
+
+        for (let node of content.childNodes) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            textContent += node.textContent.trim()
+          }
+        }
+
         const textarea = document.createElement('textarea')
-        textarea.value = value
+        textarea.value = textContent
         textarea.classList.add('add-comment__input')
         textarea.style.marginTop = '16px'
         contentParent.appendChild(textarea)
@@ -188,19 +195,81 @@ function renderApp(data) {
       }
     })
   }
+  const reply = document.querySelectorAll('.card__reply')
+  for (let i = 0; i < reply.length; i++) {
+    reply[i].addEventListener('click', () => {
+      const card = reply[i].closest('.card')
+      if (!document.getElementById(`reply_${Number(card.id)}`)) {
+        const li = document.createElement('li')
+        li.setAttribute('id', `reply_${Number(card.id)}`)
+        const replyContainer = card.closest('.reply__container')
+        if (replyContainer) {
+          const markup = `<div class="reply__border--left"></div> ${AddComment(
+            currentUser.image.png,
+            'REPLY'
+          )}`
+          li.classList.add('reply__container')
+          li.innerHTML = markup
+          replyContainer.insertAdjacentElement('afterend', li)
+        } else {
+          const markup = AddComment(currentUser.image.png, 'REPLY')
+          li.innerHTML = markup
+          card.insertAdjacentElement('afterend', li)
+        }
+        const textarea = li.querySelector('.add-comment__input')
+        const replyingTo = card.querySelector('.card__nav__name').innerText
+        // console.log(textarea)
+        // console.log(li)
+        const replyButton = li.querySelector('.add-comment__send')
+        console.log(replyButton)
+        replyButton.addEventListener('click', (e) => {
+          const content = textarea.value
+          const newObj = {
+            id: findMaxId(comments) + 1,
+            content: content,
+            convertedDate: new Date(),
+            createdAt: '1 second ago',
+            score: 0,
+            replyingTo: replyingTo,
+            user: currentUser,
+          }
+          insertObjectById(comments, Number(card.id), newObj)
+          saveLocalComments(data)
+        })
+      }
+    })
+  }
 }
 
 function changeObjectById(array, id, changedProperty, newValueProperty) {
   for (let i = 0; i < array.length; i++) {
-    debugger
     const obj = array[i]
     if (obj.id === id) {
       obj[changedProperty] = newValueProperty
+      return
     }
     if (obj.replies && obj.replies.length > 0) {
       changeObjectById(obj.replies, id, changedProperty, newValueProperty)
     }
   }
+}
+
+function insertObjectById(array, id, newObject) {
+  for (let i = 0; i < array.length; i++) {
+    const obj = array[i]
+    if (obj.id === id) {
+      obj.replies.push(newObject)
+    }
+    if (obj.replies && obj.replies.length > 0) {
+      for (let j = 0; j < obj.replies.length; j++) {
+        if (obj.replies[j].id === id) {
+          obj.replies.push(newObject)
+        }
+      }
+    }
+  }
+  console.log(array)
+  // sortComment(array)
 }
 
 function saveLocalComments(newChange) {
@@ -221,7 +290,7 @@ function saveLocalComments(newChange) {
       reply.createdAt = timeInterval
     })
   }
-
+  sortComments(data.comments)
   localStorage.setItem('comments', JSON.stringify(data))
   document.querySelector('.container').innerHTML = ''
   renderApp(data)
@@ -246,6 +315,7 @@ function getCommentsLocal() {
         reply.createdAt = timeInterval
       })
     }
+    sortComments(data.comments)
     renderApp(data)
   } else {
     runApp()
@@ -355,4 +425,42 @@ function autoResizeTextarea(element) {
   // Set the height of the textarea to its scroll height
   element.style.height = `${element.scrollHeight}px`
   // element.style.overflow = 'hidden'
+}
+
+// function sortComments(comments) {
+//   let copyComment
+//   for (let i = 0; i < comments.length; i++) {
+//     if (comments[i + 1] && comments[i + 1].score > comments[i].score) {
+//       console.log(comments[i])
+//       copyComment = comments[i]
+//       comments[i] = comments[i + 1]
+//       comments[i + 1] = copyComment
+//     }
+//     // debugger
+//     if (comments[i].replies && comments[i].replies.length > 0) {
+//       for (let j = 0; j < comments[i].replies.length; j++) {
+//         if (
+//           comments[i].replies[j + 1] &&
+//           comments[i].replies[j + 1].convertedDate >
+//             comments[i].replies[j].convertedDate
+//         ) {
+//           copyComment = comments[i].replies[j]
+//           comments[i].replies[j] = comments[i].replies[j + 1]
+//           comments[i].replies[j + 1] = copyComment
+//         }
+//       }
+//     }
+//   }
+// }
+
+function sortComments(comments) {
+  comments.sort((a, b) => b.score - a.score)
+
+  for (let comment of comments) {
+    if (comment.replies && comment.replies.length > 0) {
+      comment.replies.sort(
+        (a, b) => new Date(b.convertedDate) - new Date(a.convertedDate)
+      )
+    }
+  }
 }
