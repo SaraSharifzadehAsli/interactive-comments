@@ -168,6 +168,7 @@ button {
   background-color: $white;
   padding: 16px;
   margin-top: 16px;
+  width: 100%;
 
   &__image-send {
     @include display(flex, space-between, center);

@@ -67,13 +67,13 @@ export function CardReview(score) {
 </div>`
 }
 
-export function AddComment(currentUserImage) {
+export function AddComment(currentUserImage, buttonValue) {
   return `
   <div class="add-comment">
     <textarea class="add-comment__input" name="add-comment" placeholder="Add a comment..."></textarea>
     <div class="add-comment__image-send">
       <img class="add-comment__image" src=${currentUserImage} alt="user-image">
-      <button class="add-comment__send">SEND</button>
+      <button class="add-comment__send">${buttonValue}</button>
     </div>
   </div>
   `
