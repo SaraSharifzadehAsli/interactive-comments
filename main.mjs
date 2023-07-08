@@ -16,14 +16,13 @@ async function runApp() {
     const createdAt = comment.createdAt
     const convertedDate = convertRelativeTime(createdAt)
     comment.convertedDate = convertedDate
-  })
-  for (let i = 0; i < data.comments.length; i++) {
-    data.comments[i].replies.forEach((reply) => {
+    comment.replies.forEach((reply) => {
       const createdAt = reply.createdAt
       const convertedDate = convertRelativeTime(createdAt)
       reply.convertedDate = convertedDate
     })
-  }
+  })
+
   saveLocalComments(data)
 }
 
@@ -96,9 +95,7 @@ function renderApp(data) {
             array.splice(i, 1)
           }
           if (obj.replies && obj.replies.length > 0) {
-            const nestedResult = deleteObjectById(obj.replies, id)
-            if (nestedResult) {
-            }
+            deleteObjectById(obj.replies, id)
           }
         }
       }
@@ -388,7 +385,7 @@ function convertRelativeTime(relativeTime) {
 
   return date
 }
-
+// .toLocaleDateString('fa-IR')
 // Function to calculate the time interval
 function getTimeInterval(createdAt) {
   const now = new Date()
